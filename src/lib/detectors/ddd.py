@@ -66,7 +66,7 @@ class DddDetector(BaseDetector):
       forward_time = time.time()
       
       dets = ddd_decode(output['hm'], output['rot'], output['dep'],
-                          output['dim'], wh=wh, reg=reg, K=self.opt.K)
+                          output['dim'], wh=wh, reg=reg, K=self.opt.K, task=self.opt.task)
     if return_time:
       return output, dets, forward_time
     else:

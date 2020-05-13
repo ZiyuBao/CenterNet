@@ -9,7 +9,8 @@ from .multi_pose import MultiPoseTrainer
 
 train_factory = {
   'exdet': ExdetTrainer, 
-  'ddd': DddTrainer,
+  'ddd': DddTrainer, 
+  'ddd_2RotHeads': DddTrainer,
   'ctdet': CtdetTrainer,
   'multi_pose': MultiPoseTrainer, 
 }

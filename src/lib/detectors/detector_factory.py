@@ -9,7 +9,8 @@ from .multi_pose import MultiPoseDetector
 
 detector_factory = {
   'exdet': ExdetDetector, 
-  'ddd': DddDetector,
+  'ddd': DddDetector, 
+  'ddd_2RotHeads': DddDetector,
   'ctdet': CtdetDetector,
   'multi_pose': MultiPoseDetector, 
 }

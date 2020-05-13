@@ -423,7 +423,7 @@ def exct_decode(
 
     return detections
 
-def ddd_decode(heat, rot, depth, dim, wh=None, reg=None, K=40):
+def ddd_decode(heat, rot, depth, dim, wh=None, reg=None, K=40, task='ddd'):
     batch, cat, height, width = heat.size()
     # heat = torch.sigmoid(heat)
     # perform nms on heatmaps
@@ -440,7 +440,10 @@ def ddd_decode(heat, rot, depth, dim, wh=None, reg=None, K=40):
       ys = ys.view(batch, K, 1) + 0.5
       
     rot = _transpose_and_gather_feat(rot, inds)
-    rot = rot.view(batch, K, 8)
+    if task == 'ddd':
+        rot = rot.view(batch, K, 8)
+    elif task == 'ddd_2RotHeads':
+        rot = rot.view(batch, K, 2)
     depth = _transpose_and_gather_feat(depth, inds)
     depth = depth.view(batch, K, 1)
     dim = _transpose_and_gather_feat(dim, inds)

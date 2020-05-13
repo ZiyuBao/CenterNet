@@ -71,7 +71,10 @@ class DddDataset(data.Dataset):
     reg = np.zeros((self.max_objs, 2), dtype=np.float32)
     dep = np.zeros((self.max_objs, 1), dtype=np.float32)
     rotbin = np.zeros((self.max_objs, 2), dtype=np.int64)
-    rotres = np.zeros((self.max_objs, 2), dtype=np.float32)
+    if self.opt.task == 'ddd':
+      rotres = np.zeros((self.max_objs, 2), dtype=np.float32)
+    elif self.opt.task == 'ddd_2RotHeads':
+      rotres = np.zeros((self.max_objs, 1), dtype=np.float32)
     dim = np.zeros((self.max_objs, 3), dtype=np.float32)
     ind = np.zeros((self.max_objs), dtype=np.int64)
     reg_mask = np.zeros((self.max_objs), dtype=np.uint8)
@@ -125,12 +128,15 @@ class DddDataset(data.Dataset):
         if 1:
           alpha = self._convert_alpha(ann['alpha'])
           # print('img_id cls_id alpha rot_y', img_path, cls_id, alpha, ann['rotation_y'])
-          if alpha < np.pi / 6. or alpha > 5 * np.pi / 6.:
-            rotbin[k, 0] = 1
-            rotres[k, 0] = alpha - (-0.5 * np.pi)    
-          if alpha > -np.pi / 6. or alpha < -5 * np.pi / 6.:
-            rotbin[k, 1] = 1
-            rotres[k, 1] = alpha - (0.5 * np.pi)
+          if self.opt.task == 'ddd':
+            if alpha < np.pi / 6. or alpha > 5 * np.pi / 6.:
+              rotbin[k, 0] = 1
+              rotres[k, 0] = alpha - (-0.5 * np.pi)    
+            if alpha > -np.pi / 6. or alpha < -5 * np.pi / 6.:
+              rotbin[k, 1] = 1
+              rotres[k, 1] = alpha - (0.5 * np.pi)
+          elif self.opt.task == 'ddd_2RotHeads':
+            rotres[k, 0] = alpha
           dep[k] = ann['depth']
           dim[k] = ann['dim']
           # print('        cat dim', cls_id, dim[k])
