@@ -11,7 +11,7 @@ class opts(object):
     self.parser = argparse.ArgumentParser()
     # basic experiment setting
     self.parser.add_argument('task', default='ctdet',
-                             help='ctdet | ddd | ddd_2RotHeads | multi_pose | exdet')
+                             help='ctdet | ddd | ddd_2RotHeads | ddd_1RotHead | multi_pose | exdet')
     self.parser.add_argument('--dataset', default='coco',
                              help='coco | kitti | coco_hp | pascal')
     self.parser.add_argument('--exp_id', default='default')
@@ -149,7 +149,7 @@ class opts(object):
                                   '3dop | subcnn')
     
     # ddd_2RotHeads
-
+    # ddd_1RotHead
 
     # loss
     self.parser.add_argument('--mse_loss', action='store_true',
@@ -323,6 +323,14 @@ class opts(object):
           {'wh': 2})
       if opt.reg_offset:
         opt.heads.update({'reg': 2})
+    elif opt.task == 'ddd_1RotHead':
+      # assert opt.dataset in ['gta', 'kitti', 'viper']
+      opt.heads = {'hm': opt.num_classes, 'dep': 1, 'rot': 1, 'dim': 3}
+      if opt.reg_bbox:
+        opt.heads.update(
+          {'wh': 2})
+      if opt.reg_offset:
+        opt.heads.update({'reg': 2})
     elif opt.task == 'ctdet':
       # assert opt.dataset in ['pascal', 'coco']
       opt.heads = {'hm': opt.num_classes,
@@ -362,6 +370,9 @@ class opts(object):
                 'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225],
                 'dataset': 'kitti'},
       'ddd_2RotHeads': {'default_resolution': [384, 1280], 'num_classes': 3, 
+                'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225],
+                'dataset': 'kitti'},
+      'ddd_1RotHead': {'default_resolution': [384, 1280], 'num_classes': 3, 
                 'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225],
                 'dataset': 'kitti'},
     }

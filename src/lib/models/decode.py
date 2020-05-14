@@ -444,6 +444,8 @@ def ddd_decode(heat, rot, depth, dim, wh=None, reg=None, K=40, task='ddd'):
         rot = rot.view(batch, K, 8)
     elif task == 'ddd_2RotHeads':
         rot = rot.view(batch, K, 2)
+    elif task == 'ddd_1RotHead':
+        rot = rot.view(batch, K, 1)
     depth = _transpose_and_gather_feat(depth, inds)
     depth = depth.view(batch, K, 1)
     dim = _transpose_and_gather_feat(dim, inds)

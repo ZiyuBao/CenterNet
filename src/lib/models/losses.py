@@ -251,3 +251,14 @@ def compute_rot_loss(output, target_bin, target_res, mask, task):
         output[:, 1], torch.cos(target_res[:, 0]))
       loss = loss_sin + loss_cos
     return loss
+    # ddd_1RotHead
+    # output: (B, 128, 1) [alpha]
+    # target_res: (B, 128, 1) [res]
+    # mask: (B, 128, 1)
+    elif task == 'ddd_1RotHead':
+      output = output.view(-1, 1)
+      target_res = target_res.view(-1, 1)
+      mask = mask.view(-1, 1)
+      loss = compute_res_loss(
+        output[:, 0], target_res[:, 0])
+    return loss

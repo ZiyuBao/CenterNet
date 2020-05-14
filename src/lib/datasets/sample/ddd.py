@@ -75,6 +75,8 @@ class DddDataset(data.Dataset):
       rotres = np.zeros((self.max_objs, 2), dtype=np.float32)
     elif self.opt.task == 'ddd_2RotHeads':
       rotres = np.zeros((self.max_objs, 1), dtype=np.float32)
+    elif self.opt.task == 'ddd_1RotHead':
+      rotres = np.zeros((self.max_objs, 1), dtype=np.float32)
     dim = np.zeros((self.max_objs, 3), dtype=np.float32)
     ind = np.zeros((self.max_objs), dtype=np.int64)
     reg_mask = np.zeros((self.max_objs), dtype=np.uint8)
@@ -136,6 +138,8 @@ class DddDataset(data.Dataset):
               rotbin[k, 1] = 1
               rotres[k, 1] = alpha - (0.5 * np.pi)
           elif self.opt.task == 'ddd_2RotHeads':
+            rotres[k, 0] = alpha
+          elif self.opt.task == 'ddd_1RotHead':
             rotres[k, 0] = alpha
           dep[k] = ann['depth']
           dim[k] = ann['dim']

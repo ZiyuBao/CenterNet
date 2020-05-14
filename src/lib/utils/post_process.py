@@ -16,6 +16,8 @@ def get_alpha(rot, task):
   #                 bin2_cls[0], bin2_cls[1], bin2_sin, bin2_cos]
   # ddd_2RotHeads
   # output: (B, 128, 2) [sin, cos]
+  # ddd_1RotHead
+  # output: (B, 128, 1) [alpha]
   # 
   # return rot[:, 0]
   if task == 'ddd':
@@ -25,6 +27,8 @@ def get_alpha(rot, task):
     rot_ret = alpha1 * idx + alpha2 * (1 - idx)
   elif task == 'ddd_2RotHeads':
     rot_ret = np.arctan2(rot[:, 0], rot[:, 1])
+  elif task == 'ddd_1RotHead':
+    rot_ret = rot[:, 0]
   return rot_ret
   
 
@@ -74,6 +78,27 @@ def ddd_post_process_2d(dets, c, s, opt):
               dets[i, inds, 9:11], c[i], s[i], (opt.output_w, opt.output_h))
             .astype(np.float32)], axis=1)
       ret.append(top_preds)
+  elif opt.task == 'ddd_1RotHead':
+    include_wh = dets.shape[2] > 9
+    for i in range(dets.shape[0]):
+      top_preds = {}
+      dets[i, :, :2] = transform_preds(
+            dets[i, :, 0:2], c[i], s[i], (opt.output_w, opt.output_h))
+      classes = dets[i, :, -1]
+      for j in range(opt.num_classes):
+        inds = (classes == j)
+        top_preds[j + 1] = np.concatenate([
+          dets[i, inds, :3].astype(np.float32),
+          get_alpha(dets[i, inds, 3:4], opt.task)[:, np.newaxis].astype(np.float32),
+          get_pred_depth(dets[i, inds, 4:5]).astype(np.float32),
+          dets[i, inds, 5:8].astype(np.float32)], axis=1)
+        if include_wh:
+          top_preds[j + 1] = np.concatenate([
+            top_preds[j + 1],
+            transform_preds(
+              dets[i, inds, 8:10], c[i], s[i], (opt.output_w, opt.output_h))
+            .astype(np.float32)], axis=1)
+      ret.append(top_preds)
   return ret
 
 def ddd_post_process_3d(dets, calibs):
@@ -96,7 +121,7 @@ def ddd_post_process_3d(dets, calibs):
         bbox = [center[0] - wh[0] / 2, center[1] - wh[1] / 2,
                 center[0] + wh[0] / 2, center[1] + wh[1] / 2]
         pred = [alpha] + bbox + dimensions.tolist() + \
-              locations.tolist() + [rotation_y, score]
+                locations.tolist() + [rotation_y, score]
         preds[cls_ind].append(pred)
       preds[cls_ind] = np.array(preds[cls_ind], dtype=np.float32)
     ret.append(preds)

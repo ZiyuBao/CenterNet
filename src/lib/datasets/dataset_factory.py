@@ -25,6 +25,7 @@ _sample_factory = {
   'ctdet': CTDetDataset,
   'ddd': DddDataset,
   'ddd_2RotHeads': DddDataset,
+  'ddd_1RotHead': DddDataset,
   'multi_pose': MultiPoseDataset
 }
 
