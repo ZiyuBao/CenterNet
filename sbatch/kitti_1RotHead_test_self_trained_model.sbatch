@@ -4,9 +4,9 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gres=gpu:2  # Number of GPUs per node
-#SBATCH --mem=4096  # memory in Mb
+#SBATCH --mem=2048  # memory in Mb
 #SBATCH --output /home/nfs/zbao/log/kitti_1RotHead_test_self_trained_model_%j.txt
-#SBATCH --time 4:00:00  # time requested in hour:minute:second
+#SBATCH --time 0:20:00  # time requested in hour:minute:second
 #SBATCH --mail-type=END
 
 cd /home/nfs/zbao/CenterNet/src
